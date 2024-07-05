@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 function Component (){
     const navigate = useNavigate();
     useEffect(()=>{
-        if(localStorage.getItem("names")){
+        if(localStorage.getItem("userDetails")){
             // fetch the data from api and show on screen
 
         }
@@ -13,7 +13,7 @@ function Component (){
             // redirect to the first page
             navigate('/',{
                 state:{
-                    showAlert:true
+                    dataNeeded:true
                 }
             })
 
