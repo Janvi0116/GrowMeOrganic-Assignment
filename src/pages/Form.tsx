@@ -8,6 +8,8 @@ function Form(): JSX.Element {
   const [emailId, setEmailId] = useState<string>("");
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertMessage, setAlertMessage] = useState<string>("");
+  const [necessaryInfoShowed, setNecessaryInfoShowed] = useState<boolean>(false);
+
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -16,12 +18,12 @@ function Form(): JSX.Element {
   const { state } = location as { state: { dataNeeded: boolean } | undefined };
 
   useEffect(() => {
-    if (state && state.dataNeeded && !showAlert) {
+    if (state && state.dataNeeded && !showAlert && !necessaryInfoShowed) {
       setAlertMessage("Please fill in the necessary information");
       setShowAlert(true);
-      state.dataNeeded = false;
+      setNecessaryInfoShowed(true);
     }
-  }, [state, showAlert]);
+  }, [state, showAlert, necessaryInfoShowed]);
 
   const handleSubmit = () => {
     if (!name || !phoneNumber || !emailId) {
