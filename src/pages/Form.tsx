@@ -1,24 +1,26 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { TextField, Button, Box, Snackbar, Alert } from "@mui/material";
 
-function Form() {
-  const [name, setName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [emailId, setEmailId] = useState("");
-  const [showAlert, setShowAlert] = useState(false);
-  const [alertMessage, setAlertMessage] = useState("");
+function Form(): JSX.Element {
+  const [name, setName] = useState<string>("");
+  const [phoneNumber, setPhoneNumber] = useState<string>("");
+  const [emailId, setEmailId] = useState<string>("");
+  const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [alertMessage, setAlertMessage] = useState<string>("");
 
   const navigate = useNavigate();
   const location = useLocation();
 
-  // destructuring the "state" key value- equivalent to :
-  // const state = location.state;
-  const { state } = location;
-  if (state && state.dataNeeded && !showAlert) {
-    setAlertMessage("Please fill in the necessary information");
-    setShowAlert(true);
-  }
+  // Destructuring the "state" key value
+  const { state } = location as { state: { dataNeeded: boolean } | undefined };
+
+  useEffect(() => {
+    if (state && state.dataNeeded && !showAlert) {
+      setAlertMessage("Please fill in the necessary information");
+      setShowAlert(true);
+    }
+  }, [state, showAlert]);
 
   const handleSubmit = () => {
     if (!name || !phoneNumber || !emailId) {
@@ -62,9 +64,9 @@ function Form() {
             label="Name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            error={!/^[A-Za-z\s]*$/.test(name)}
+            error={name !== "" && !/^[A-Za-z\s]+$/.test(name)}
             helperText={
-              name && !/^[A-Za-z\s]*$/.test(name) ? "Invalid name format" : ""
+              name !== "" && !/^[A-Za-z\s]+$/.test(name) ? "Invalid name format" : ""
             }
           />
         </Box>
@@ -74,9 +76,9 @@ function Form() {
             label="Phone Number"
             value={phoneNumber}
             onChange={(e) => setPhoneNumber(e.target.value)}
-            error={phoneNumber && !/^\d{10}$/.test(phoneNumber)}
+            error={phoneNumber !== "" && !/^\d{10}$/.test(phoneNumber)}
             helperText={
-              phoneNumber && !/^\d{10}$/.test(phoneNumber)
+              phoneNumber !== "" && !/^\d{10}$/.test(phoneNumber)
                 ? "Phone number must be 10 digits"
                 : ""
             }
@@ -89,11 +91,11 @@ function Form() {
             value={emailId}
             onChange={(e) => setEmailId(e.target.value)}
             error={
-              emailId &&
+              emailId !== "" &&
               !/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(emailId)
             }
             helperText={
-              emailId &&
+              emailId !== "" &&
               !/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(emailId)
                 ? "Invalid email format"
                 : ""
@@ -107,7 +109,7 @@ function Form() {
       <Snackbar
         open={showAlert}
         autoHideDuration={2000}
-        onClose={() => {setShowAlert(false); state.dataNeeded = false;}}
+        onClose={() => setShowAlert(false)}
       >
         <Alert onClose={() => setShowAlert(false)} severity="error">
           {alertMessage}

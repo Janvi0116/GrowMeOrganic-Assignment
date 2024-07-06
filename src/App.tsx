@@ -1,14 +1,14 @@
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Form from "./pages/Form.tsx";
-import Component from "./pages/Component2.tsx";
+import Form from "./pages/Form";
+import Component from "./pages/Component2";
 
-function App() {
+function App(): JSX.Element {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Form />}></Route>
-        <Route path="/second" element={<Component />}></Route>
+        <Route path="/" element={<Form />} />
+        <Route path="/second" element={<Component />} />
       </Routes>
     </BrowserRouter>
   );

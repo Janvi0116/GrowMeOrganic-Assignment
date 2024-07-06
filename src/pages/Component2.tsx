@@ -1,30 +1,80 @@
-import { useState, React, useEffect} from "react"
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { CircularProgress, Box, Typography, Alert } from '@mui/material';
+import getUserData from './../api/getUserData';
+import DepartmentList from "../components/Department";
 
+type UserData = {
+    userId: number;
+    id: number;
+    title: string;
+    body: string;
+};
 
-function Component (){
+function Component() {
+    const [userData, setUserData] = useState<UserData[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(false);
+
     const navigate = useNavigate();
-    useEffect(()=>{
-        if(localStorage.getItem("userDetails")){
-            // fetch the data from api and show on screen
 
-        }
-        else{
+    useEffect(() => {
+        if (localStorage.getItem("userDetails")) {
+            // fetch the data from API and show on screen
+            getUserData()
+                .then((finalData: UserData[]) => {
+                    const array = finalData.slice(0, 9);
+                    setUserData(array);
+                })
+                .catch(() => {
+                    setError(true);
+                })
+                .finally(() => {
+                    setIsLoading(false);
+                });
+        } else {
             // redirect to the first page
-            navigate('/',{
-                state:{
-                    dataNeeded:true
+            navigate('/', {
+                state: {
+                    dataNeeded: true
                 }
-            })
-
+            });
         }
-        
+    }, [navigate]);
 
-    })
-
+    const columns: GridColDef[] = [
+        { field: 'userId', headerName: 'User ID', flex: 1 },
+        { field: 'id', headerName: 'ID', flex: 1 },
+        { field: 'title', headerName: 'Title', flex: 2 },
+        { field: 'body', headerName: 'Body', flex: 3 },
+    ];
 
     return (
-        <p>Bye</p>
+        <>
+            <Box sx={{ p: 3}}>
+                {isLoading && (
+                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+                        <CircularProgress />
+                    </Box>
+                )}
+                {error && (
+                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+                        <Alert severity="error">Something went wrong</Alert>
+                    </Box>
+                )}
+                {!isLoading && !error && (
+                    <Box sx={{ height: 600, width: '100%' }}>
+                        <Typography variant="h4" gutterBottom>
+                            User Data
+                        </Typography>
+                        <DataGrid rows={userData} columns={columns} pageSize={10} rowsPerPageOptions={[10]} autoHeight />
+                    </Box>
+                )}
+            </Box>
+            <DepartmentList />
+        </>
     );
 }
 
