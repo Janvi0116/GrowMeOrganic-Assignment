@@ -19,6 +19,7 @@ function Form(): JSX.Element {
     if (state && state.dataNeeded && !showAlert) {
       setAlertMessage("Please fill in the necessary information");
       setShowAlert(true);
+      state.dataNeeded = false;
     }
   }, [state, showAlert]);
 
