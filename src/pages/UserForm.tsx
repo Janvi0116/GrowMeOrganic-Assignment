@@ -2,11 +2,11 @@ import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { TextField, Button, Box, Snackbar, Alert } from "@mui/material";
 
-function Form(): JSX.Element {
+function UserForm(): JSX.Element {
   const [name, setName] = useState<string>("");
   const [phoneNumber, setPhoneNumber] = useState<string>("");
   const [emailId, setEmailId] = useState<string>("");
-  const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [showAlertMessage, setShowAlertMessage] = useState<boolean>(false);
   const [alertMessage, setAlertMessage] = useState<string>("");
   const [necessaryInfoShowed, setNecessaryInfoShowed] = useState<boolean>(false);
 
@@ -14,39 +14,38 @@ function Form(): JSX.Element {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Destructuring the "state" key value
   const { state } = location as { state: { dataNeeded: boolean } | undefined };
 
   useEffect(() => {
-    if (state && state.dataNeeded && !showAlert && !necessaryInfoShowed) {
+    if (state && state.dataNeeded && !showAlertMessage && !necessaryInfoShowed) {
       setAlertMessage("Please fill in the necessary information");
-      setShowAlert(true);
+      setShowAlertMessage(true);
       setNecessaryInfoShowed(true);
     }
-  }, [state, showAlert, necessaryInfoShowed]);
+  }, [state, showAlertMessage, necessaryInfoShowed]);
 
   const handleSubmit = () => {
     if (!name || !phoneNumber || !emailId) {
       setAlertMessage("All fields are required");
-      setShowAlert(true);
+      setShowAlertMessage(true);
       return;
     }
 
     if (!/^[A-Za-z\s]+$/.test(name)) {
       setAlertMessage("Invalid name format");
-      setShowAlert(true);
+      setShowAlertMessage(true);
       return;
     }
 
     if (!/^\d{10}$/.test(phoneNumber)) {
       setAlertMessage("Phone number must be 10 digits");
-      setShowAlert(true);
+      setShowAlertMessage(true);
       return;
     }
 
     if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(emailId)) {
       setAlertMessage("Invalid email format");
-      setShowAlert(true);
+      setShowAlertMessage(true);
       return;
     }
 
@@ -54,7 +53,7 @@ function Form(): JSX.Element {
       "userDetails",
       JSON.stringify({ name, phoneNumber, emailId })
     );
-    navigate("/second");
+    navigate("/data_table_dropdown");
   };
 
   return (
@@ -110,11 +109,11 @@ function Form(): JSX.Element {
         </Button>
       </form>
       <Snackbar
-        open={showAlert}
+        open={showAlertMessage}
         autoHideDuration={2000}
-        onClose={() => setShowAlert(false)}
+        onClose={() => setShowAlertMessage(false)}
       >
-        <Alert onClose={() => setShowAlert(false)} severity="error">
+        <Alert onClose={() => setShowAlertMessage(false)} severity="error">
           {alertMessage}
         </Alert>
       </Snackbar>
@@ -122,4 +121,4 @@ function Form(): JSX.Element {
   );
 }
 
-export default Form;
+export default UserForm;

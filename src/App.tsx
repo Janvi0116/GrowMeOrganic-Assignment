@@ -1,14 +1,14 @@
 import "./App.css";
 import { Routes, Route, HashRouter } from "react-router-dom";
-import Form from "./pages/Form";
-import Component from "./pages/Component2";
+import UserForm from "./pages/UserForm";
+import TableAndDropDown from "./pages/TableAndDropDown";
 
 function App(): JSX.Element {
   return (
     <HashRouter>
       <Routes>
-        <Route path="/" element={<Form />} />
-        <Route path="/second" element={<Component />} />
+        <Route path="/" element={<UserForm />} />
+        <Route path="/data_table_dropdown" element={<TableAndDropDown/>} />
       </Routes>
     </HashRouter>
   );

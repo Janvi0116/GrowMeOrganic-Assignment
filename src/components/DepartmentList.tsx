@@ -33,31 +33,33 @@ type SelectedState = {
   [key: string]: DepartmentState;
 };
 
-const DepartmentList: React.FC = () => {
+const data: Department[] = [
+  {
+    department: "customer_service",
+    sub_departments: [
+      "support",
+      "customer_success"
+    ]
+  },
+  {
+    department: "design",
+    sub_departments: [
+      "graphic_design",
+      "product_design",
+      "web_design"
+    ]
+  }
+];
+
+function DepartmentList() : JSX.Element {
   const [departments, setDepartments] = useState<Department[]>([]);
-  const [expanded, setExpanded] = useState<ExpandedState>({});
-  const [selected, setSelected] = useState<SelectedState>({});
+  const [expandedUiState, changeExpandedUiState] = useState<ExpandedState>({});
+  const [selectedUiState, changeSelectedUiState] = useState<SelectedState>({});
 
   useEffect(() => {
-    // Simulating API call
-    const fetchData = async (): Promise<void> => {
-      const data: Department[] = [
-        {
-          department: "customer_service",
-          sub_departments: [
-            "support",
-            "customer_success"
-          ]
-        },
-        {
-          department: "design",
-          sub_departments: [
-            "graphic_design",
-            "product_design",
-            "web_design"
-          ]
-        }
-      ];
+
+    const fetchData = (): void =>{
+      
       setDepartments(data);
       
       const initialExpanded: ExpandedState = {};
@@ -72,19 +74,19 @@ const DepartmentList: React.FC = () => {
           }, {} as SubDepartmentState)
         };
       });
-      setExpanded(initialExpanded);
-      setSelected(initialSelected);
+      changeExpandedUiState(initialExpanded);
+      changeSelectedUiState(initialSelected);
     };
 
     fetchData();
   }, []);
 
   const handleToggle = (department: string): void => {
-    setExpanded(prev => ({ ...prev, [department]: !prev[department] }));
+    changeExpandedUiState(prev => ({ ...prev, [department]: !prev[department] }));
   };
 
   const handleDepartmentSelect = (department: string): void => {
-    setSelected(prev => {
+    changeSelectedUiState(prev => {
       const newSelected = { ...prev };
       const isChecked = !newSelected[department].checked;
       newSelected[department].checked = isChecked;
@@ -96,7 +98,7 @@ const DepartmentList: React.FC = () => {
   };
 
   const handleSubDepartmentSelect = (department: string, subDepartment: string): void => {
-    setSelected(prev => {
+    changeSelectedUiState(prev => {
       const newSelected = { ...prev };
       newSelected[department].subDepartments[subDepartment] = !newSelected[department].subDepartments[subDepartment];
       
@@ -115,23 +117,23 @@ const DepartmentList: React.FC = () => {
             <ListItemIcon>
               <Checkbox
                 edge="start"
-                checked={selected[dept.department]?.checked || false}
+                checked={selectedUiState[dept.department]?.checked || false}
                 onChange={() => handleDepartmentSelect(dept.department)}
               />
             </ListItemIcon>
             <ListItemText primary={dept.department} />
             <IconButton onClick={() => handleToggle(dept.department)}>
-              {expanded[dept.department] ? <ExpandMoreIcon /> : <ChevronRightIcon />}
+              {expandedUiState[dept.department] ? <ExpandMoreIcon /> : <ChevronRightIcon />}
             </IconButton>
           </ListItem>
-          <Collapse in={expanded[dept.department]} timeout="auto" unmountOnExit>
+          <Collapse in={expandedUiState[dept.department]} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
               {dept.sub_departments.map((subDept) => (
                 <ListItem key={subDept} sx={{ pl: 4 }}>
                   <ListItemIcon>
                     <Checkbox
                       edge="start"
-                      checked={selected[dept.department]?.subDepartments[subDept] || false}
+                      checked={selectedUiState[dept.department]?.subDepartments[subDept] || false}
                       onChange={() => handleSubDepartmentSelect(dept.department, subDept)}
                     />
                   </ListItemIcon>
@@ -144,6 +146,6 @@ const DepartmentList: React.FC = () => {
       ))}
     </List>
   );
-};
+}
 
 export default DepartmentList;
