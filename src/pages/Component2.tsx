@@ -69,7 +69,7 @@ function Component() {
                         <Typography variant="h4" gutterBottom>
                             User Data
                         </Typography>
-                        <DataGrid rows={userData} columns={columns} pageSize={10} rowsPerPageOptions={[10]} autoHeight />
+                        <DataGrid rows={userData} columns={columns}/>
                     </Box>
                 )}
             </Box>

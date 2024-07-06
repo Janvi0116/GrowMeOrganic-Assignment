@@ -108,7 +108,7 @@ const DepartmentList: React.FC = () => {
   };
 
   return (
-    <List>
+    <List sx={{ width:'30%', marginTop:'50px'}}>
       {departments.map((dept) => (
         <React.Fragment key={dept.department}>
           <ListItem>
